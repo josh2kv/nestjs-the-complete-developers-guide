@@ -31,9 +31,15 @@
 
 ## Controllers
 
-![decorators](images/2-04%20decorators.jpg)
-![decorators](images/2-05%20decorators.jpg)
-![decorators](images/2-06%20decorators.jpg)
+![controllers](images/2-04%20controllers.jpg)
+![controllers](images/2-05%20controllers.jpg)
+![controllers](images/2-06%20controllers.jpg)
+
+### validations
+
+![validations](images/2-07%20validations.jpg)
+![validations](images/2-08%20validations.jpg)
+![validations](images/2-09%20validations.jpg)
 
 ## Services
 
@@ -78,6 +84,8 @@
 
 #### DI between modules
 
+- `providers` property 안에 Service들은 private -> 다른 Module에서 접근 불가
+- `exports`: 다른 Module에서 접근할 수 있도록 함
 ![di between modules](images/4-10%20di%20between%20modules.jpg)
 ![di between modules](images/4-11%20di%20between%20modules.jpg)
 ![di between modules](images/4-12%20di%20between%20modules.jpg)
@@ -86,3 +94,37 @@
 
 ![modules](images/5-01%20modules.jpg)
 ![modules](images/5-02%20modules.jpg)
+
+## TypeORM
+
+![typeORM](images/6-01%20typeORM.jpg)
+
+- `TypeOrmModule.forRoot()`: `AppModule`에서 DB에 한번 접속하고 나면 하위 모든 Module에서 그 연결이 공유되도록 함
+- `synchronize: true`
+  - 개발환경에서만 쓰임
+  - entity structure를 자동으로 동기화함
+  - table의 추가/수정/삭제, columes의 추가/수정/삭제 등에 자동으로 동기화
+- database class 이름은 뒤에 'Entity'를 붙이기도 함 `User` or `UserEntity`
+
+![typeORM](images/6-02%20typeORM.jpg)
+
+- `imports:  [TypeOrmModule.forFeature([User])]`
+  - Users Repository를 만듬
+  - Service에서 TypeORM이 제공하는 Repository API를 사용할 수 있게함
+  
+```ts
+@Injectable()
+export class UsersService {
+   constructor(@InjectRepository(User) private repo: Repository<User>) {}
+   // ~~~
+}
+```
+
+- `repo: Repository<User>`
+  - `repo`는 `User` instance를 관장하는 `typeORM.Repository`의 instance가 될것임
+  - `UserService` class에 `typeORM.Repository<User>`가 inject될 것임을 dependency injection system에 알림
+  - 하지만 dependency injection system은 generic을 제대로 받아들이지 못함
+- `@InjectRepository(User)`
+  - generic type을 사용하기 위해 dependency injection system에 알림
+
+- `whitelist: true`: request body에 dto를 포함한 추가적인 property가 있는 경우 dto 빼고 나머지 버림
