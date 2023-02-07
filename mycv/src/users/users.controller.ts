@@ -16,6 +16,7 @@ import { UsersService } from './users.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -26,7 +27,6 @@ export class UsersController {
 
   // @UseInterceptors(ClassSerializerInterceptor)
   // @UseInterceptors(new SerializeInterceptor(UserDto))
-  @Serialize(UserDto)
   @Get('/:id')
   async findUser(@Param('id') id: string) {
     console.log('2) handler is running');
