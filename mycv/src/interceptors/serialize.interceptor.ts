@@ -1,7 +1,12 @@
 import { NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { UseInterceptors } from '@nestjs/common/decorators';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { plainToClass } from 'class-transformer';
+
+export function Serialize(dto: any) {
+  return UseInterceptors(new SerializeInterceptor(dto));
+}
 
 /**
  * Object(Entity)를 받아서 Serialized JSON으로
