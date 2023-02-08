@@ -260,3 +260,23 @@ export class SerializeInterceptor implements NestInterceptor {
     new (...args: any[]): {};
   }
   ```
+
+## Authentication
+
+![authentication flow](images/9-01%20auth.jpg)
+
+- Users Module 안에 Auth Service를 따로 만들 것인가? 기존 Users Service에 같이 넣을 것인가?
+  - 작은 app에서는 상관없지만 커질수록 AuthService를 따로 만드는 게 좋음(Auth와 관련된 여러 feature가 추가될 수 있기 때문에)
+
+![authentication dependency](images/9-02%20auth.jpg)
+
+### Hash Function
+
+- input이 조금만 달라도 output은 완전히 달라짐
+- output을 input으로 되돌릴 수 없음
+
+![rainbow table attack](images/9-03%20auth.jpg)
+
+- Rainbow Table Attack
+  - 사람들이 많이 쓰는 password를 모아 놓은 테이블을 input으로 hash function에 넣어 output들을 모아 database의 password와 대조해봄(사실상 확률 높은 무작위 입력이네)
+  - 막는법: Salt 추가

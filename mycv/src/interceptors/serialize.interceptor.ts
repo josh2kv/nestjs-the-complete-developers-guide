@@ -22,13 +22,13 @@ export class SerializeInterceptor implements NestInterceptor {
     // by the request handler
     // context: Information on the incoming request
     // handler: Kind of a reference to the request handler in our controller
-    console.log('1) Im running before the handler', context);
+    // console.log('1) Im running before the handler', context);
 
     return handler.handle().pipe(
       map((data: any) => {
         // Run something before the response is sent out
         // data: User Entity object
-        console.log('3) Im running before response is sent out', data);
+        // console.log('3) Im running before response is sent out', data);
         // plainToClass(Class, object): object를 받아 ClassTransformOptions rules에 따라 Class의 instance를 만들어 return(User Entity object -> UserDto instance)
         return plainToClass(this.dto, data, {
           excludeExtraneousValues: true,
