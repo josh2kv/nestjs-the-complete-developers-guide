@@ -17,6 +17,7 @@
 ## Parts of NestJS
 
 ![server flow](images/1-04%20nestjs.jpg)
+
 ![parts of NestJS](images/1-05%20nestjs.jpg)
 
 ## Conventions
@@ -26,19 +27,25 @@
 ## Decorators
 
 ![decorators](images/2-01%20decorators.jpg)
+
 ![decorators](images/2-02%20decorators.jpg)
+
 ![decorators](images/2-03%20decorators.jpg)
 
 ## Controllers
 
 ![controllers](images/2-04%20controllers.jpg)
+
 ![controllers](images/2-05%20controllers.jpg)
+
 ![controllers](images/2-06%20controllers.jpg)
 
 ### validations
 
 ![validations](images/2-07%20validations.jpg)
+
 ![validations](images/2-08%20validations.jpg)
+
 ![validations](images/2-09%20validations.jpg)
 
 - `whitelist: true`: request body에 dto를 포함한 추가적인 property가 있는 경우 dto 빼고 나머지 버림
@@ -46,17 +53,25 @@
 ## Services
 
 ![services](images/3-01%20services.jpg)
+
 ![services](images/3-02%20services.jpg)
+
 ![services](images/3-03%20services.jpg)
+
 ![services](images/3-04%20services.jpg)
+
 ![services](images/3-05%20services.jpg)
+
 ![services](images/3-06%20services.jpg)
 
 ### Dependency Injection
 
 ![di](images/4-01%20di.jpg)
+
 ![di](images/4-02%20di.jpg)
+
 ![di](images/4-03%20di.jpg)
+
 ![di](images/4-04%20di.jpg)
 
 #### 사용할 dependency(instance)를 어떻게 받을 것인가?(Inversion of Control)
@@ -65,7 +80,9 @@
 - ✅ 만들어진 instance를 받아서 쓴다.
 
 ![inversion of control](images/4-05%20ioc.jpg)
+
 ![inversion of control](images/4-06%20ioc.jpg)
+
 ![inversion of control](images/4-07%20ioc.jpg)
 
 - TypeScript의 한계때문에 better approach를 사용하지만 나중에 best approach를 사용할 수 있는 workaround를 알려줄 것임. 하지만 좀 어려움
@@ -82,6 +99,7 @@
    - `@Injectable()`: 이 class(보통 Service와 Repository)는 dependency가 될 것이니 DI Container에 등록하라고 표시함. Controller는 consuming only class이므로 표시x
    - `@Module({ providers: []})`: 다른 class에 dependency로 사용될 수 있는 것들 목록
 ![di container](images/4-08%20di%20container.jpg)
+
 ![di container](images/4-09%20di%20container.jpg)
 
 #### DI between modules
@@ -89,12 +107,15 @@
 - `providers` property 안에 Service들은 private -> 다른 Module에서 접근 불가
 - `exports`: 다른 Module에서 접근할 수 있도록 함
 ![di between modules](images/4-10%20di%20between%20modules.jpg)
+
 ![di between modules](images/4-11%20di%20between%20modules.jpg)
+
 ![di between modules](images/4-12%20di%20between%20modules.jpg)
 
 ## Modules
 
 ![modules](images/5-01%20modules.jpg)
+
 ![modules](images/5-02%20modules.jpg)
 
 ## TypeORM
@@ -138,8 +159,11 @@ export class UsersService {
 #### hooks 적용하기
 
 ![app apis](images/6-03%20app%20apis.jpg)
+
 ![app apis](images/6-04%20app%20apis.jpg)
+
 ![create flow](images/6-05%20create%20flow.jpg)
+
 ![hooks](images/6-06%20hooks.jpg)
 
 - hooks: Entity 안에 정의한 method. 특정시점에 자동으로 호출됨
@@ -160,6 +184,7 @@ async update(id: number, attrs: Partial<User>) {
 ## Error 처리하기
 
 ![http errors](images/7-01%20http%20errors.jpg)
+
 ![http errors](images/7-02%20http%20errors.jpg)
 
 - `NotFoundException`와 같은 http의 특정한 Error는 http를 제외한 다른 protocol과 호환되지 않음
