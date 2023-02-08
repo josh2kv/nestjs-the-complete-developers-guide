@@ -1,4 +1,13 @@
 
+### signin
+POST http://localhost:3000/auth/signin
+content-type: application/json
+
+{
+  "email": "eee@eee.com",
+  "password": "eedea"
+}
+
 ### Create a new user
 POST http://localhost:3000/auth/signup
 content-type: application/json
