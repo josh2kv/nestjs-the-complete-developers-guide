@@ -280,3 +280,65 @@ export class SerializeInterceptor implements NestInterceptor {
 - Rainbow Table Attack
   - 사람들이 많이 쓰는 password를 모아 놓은 테이블을 input으로 hash function에 넣어 output들을 모아 database의 password와 대조해봄(사실상 확률 높은 무작위 입력이네)
   - 막는법: Salt 추가
+
+### Cookie And Session
+
+![cookie and session](images/9-04%20cookie-session.jpg)
+
+- NestJS의 tsconfig와 cookie-session package의 충돌이 있어 import 대신 require를 사용해야함
+- `keys: ['some string']`: cookie를 encrypt하는데 사용됨
+- session object에 값을 저장하거나 가져오기 위해 `@Session()` 사용
+- session값(`session.userId`)이 변하지 않으면(같은 사용자가 다시 로그인 하면) set-cookie 하지 않음(response header에 cookie를 담지 않음)
+- `Repository.findOne(null)`하면 첫 번째 record return. 따라서 그전에 `null`이면 return하도록(혹은 에러처리) 해야함
+
+![guard](images/9-05%20guard.jpg)
+
+### Interceptor와 Decorator 조합하기
+
+- `ExecutionContext`
+  - wrapper로 감싸진 incoming request object
+  - 단순히 request object로 불리지 않는 이유는 다양한 protocol의 incoming request(WebSocket incoming message, GRPC request, HTTP request 등)를 abstract하는데 쓰이기 때문에
+  - 다양한 protocol의 request에 똑같이 잘 작동할 수 있는 code를 짤 수 있도록 해줌
+- ParamDecorator의 return 값이 곧 parameter가 됨
+- `data`
+  - Decorator에 넘겨지는 argument
+  - argument를 받지 않을 것이므로 type을 `never`로 둠
+
+#### Interceptor를 사용해야 하는 이유
+
+![interceptor](images/9-06%20interceptor.jpg)
+
+- class 안 `constructor`에서 instance를 inject해서 써야함
+- 근데 Decorator는 class가 아님
+
+![interceptor](images/9-07%20interceptor.jpg)
+
+- Decorator가 Service instance를 inject 받을 수 없으니까 Interceptor를 통해 우회해서 접근
+- interceptor의 body에서 `request.currentUser` = user 해두면 decorator에서 `return request.currentUser` 가능
+  - controller의 handler에서 `request.currentUser`에 접근하기 전에 interceptor에서 미리 값을 넣어둠
+  - interceptor body(request를 받은 직후) -> `handler.handle()`(controller) -> interceptor return(response가 나가기 직전) 순으로 실행됨
+  - `request.session.userId`에는 현재 user ID가 저장되고, `request.currentUser`에는 현재 user 정보가 저장됨
+- 왜 interceptor와 decorator를 조합해서 씀? 그냥 interceptor만 쓰면 안됨?
+  - 됨. 하지만 최종 목표는 current user를 return하는 decorator를 만드는 것
+  - 그 것을 위해 interceptor를 사용한 것일 뿐 당연히 interceptor만 독립적으로 사용될 수 있음
+  - `Request` Decorator를 사용할 수도 있지만 elegant하지 않음(`CurrentUser`라는 이름으로 목적을 명확히 나타낼 수 있음)
+
+  ```ts
+  whoAmI(@Request() request: Request) {
+    const user = request.currentUser
+    // ~~~
+  }
+  ```
+
+- 전체 Controller에 공통으로 적용해야 하는 interceptor는 global로 넣자 -> `APP_INTERCEPTOR`
+
+### Guard
+
+![guard](images/9-08%20guard.jpg)
+
+- `canActivate()` method를 가지며 이 method는 incoming request가 있을 때마다 호출됨
+
+![guard](images/9-09%20guard.jpg)
+
+- Interceptor처럼 scope별로 적용 가능
+- injectable x(`providers`에 넣지x)
