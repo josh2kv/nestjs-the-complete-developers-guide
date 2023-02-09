@@ -20,7 +20,7 @@ content-type: application/json
 ### Sign out
 POST http://localhost:3000/auth/signout 
 
-### Get the user being signed in
+### Who am I?
 GET http://localhost:3000/auth/whoami
 
 ### Find a particular user with id
