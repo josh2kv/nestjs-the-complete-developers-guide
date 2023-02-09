@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
+import { BadRequestException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,8 @@ export class UsersService {
   }
 
   findOne(id: number) {
+    if (!id) throw new BadRequestException('user id required');
+
     return this.repo.findOne({
       where: { id },
     });
