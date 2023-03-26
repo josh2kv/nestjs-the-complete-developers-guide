@@ -20,6 +20,8 @@ export class AuthService {
 
     // Hash the user's password
     // Generate a salt
+    // randomBytes(9) -> <Buffer 5f f6 a0 da d9 e8 d7 e1 99>
+    // randomBytes(9).toString('hex') -> d9a0205c10fc1c4399
     const salt = randomBytes(9).toString('hex');
 
     // Hash the salt and the password together
