@@ -7,15 +7,18 @@ describe('AuthService', () => {
   let service: AuthService;
   let fakeUserService: Partial<UsersService>;
 
-  // 본격적으로 테스트하기 전 항상 fake users service를 만들도록 함
+  // 본격적으로 테스트하기 전 항상 AuthService와 fake users service를 만들도록 함
+  // 테스트마다 새로운 instance를 사용하기 위해
   beforeEach(async () => {
     // Create a fake copy of the users service
+    // AuthService에서 실제로  사용하는 method들만 선언하면 됨
     fakeUserService = {
       find: () => Promise.resolve([]),
       create: (email: string, password: string) =>
         Promise.resolve({ id: 1, email, password } as User),
     };
 
+    // 임시 testing DI Container를 만듬
     const module = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -26,6 +29,7 @@ describe('AuthService', () => {
       ],
     }).compile();
 
+    // testing DI Container에게 모든 dependency들이 적용된 새로운 AuthService instance를 만들어서 달라고 함
     service = module.get(AuthService);
   });
 

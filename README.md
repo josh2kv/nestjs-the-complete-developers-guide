@@ -260,6 +260,30 @@ async update(id: number, attrs: Partial<User>) {
 
 - `Repository.delete(id)` 대신 `Repository.remove(Entity)` 사용
 
+### Associations
+
+![associations](images/6-07%20associations.jpg)
+
+- `OneToMany()`(user)는 데이터베이스에 영향x, `ManyToOne()`(report)만 해당 many Entity table에 one Entity column 만듬
+![associations](images/6-08%20associations.jpg)
+
+#### relation decorator의 parameters
+
+- 첫번째: Entity를 그냥 넣지 않고 function으로 return하는 이유(`() => Report`)
+  - circular dependency 문제 때문
+  - 하나의 모듈(class)이 실행되는 시점에 다른 모듈은 `undefined`
+- 두번째: 같은 Entity이면서 다른 종류의 여러 관계를 설정할 때 필요
+![associations](images/6-09%20associations.jpg)
+
+#### Many Entity에 붙은 One Entity serialize하기
+
+```ts
+// report.dto.ts
+@Transform(({ obj }) => obj.user.id)
+@Expose()
+userId: number
+```
+
 ## Error 처리하기
 
 ![http errors](images/7-01%20http%20errors.jpg)
@@ -513,3 +537,56 @@ export class UsersController {
 - injectable x(`providers`에 넣지x)
 
 ![guard](images/9-09%20guard.jpg)
+
+### Middleware
+
+#### current user 가져오는 위치
+
+- current user를 가져오는 logic은 interceptor보다 middleware에 넣는 것이 좋음
+  - route 전에 guard에서 사용할 수도 있으므로
+
+```ts
+// users.module.ts
+export class UsersModule {
+  configure(consumer: MiddleWareConsumer) {
+    consumer.apply(CurrentUserMiddleware).forRoutes('*')
+  }
+}
+
+```
+
+#### library에서 가져온 type에 property 추가하기
+
+- `req`는 express의 `Request` type이라 `currentUser`라는 property를 가지고 있지 않음 -> type error
+
+```ts
+declare global {
+  namespace Express {
+    interface Request {
+      currentUser?: User;
+    }
+  }
+}
+
+@Injectable()
+export class CurrentUserMiddleware implements NestMiddleware {
+  constructor(private usersService: UsersService) {}
+
+  async use(req: Request, res: Response, next: NextFunction) {
+    const { userId } = req.session || {};
+
+    if (userId) {
+      const user = await this.usersService.findOne(userId);
+      req.currentUser = user;
+    }
+
+    next();
+  }
+}
+```
+
+## Testing
+
+## Deployment
+
+### Migration
